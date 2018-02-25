@@ -110,8 +110,8 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 CRMIFY = {
     'BACKEND': 'crmify.backends.insightly.InsightlyBackend',
-    'BACKEND_FIELDMAPPER': 'sales.mappers.UserProfileFieldMapper',
-    'LEAD_MODEL': 'sales.models.UserProfile'
+    'LEAD_MODEL': 'sales.models.UserProfile',
+    'LEAD_MODEL_FIELDMAPPER': 'sales.mappers.UserProfileFieldMapper',
 }
 
 # Static files (CSS, JavaScript, Images)

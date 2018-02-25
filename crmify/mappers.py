@@ -1,7 +1,4 @@
-from crmify.models import Lead
-
-
-class FieldMapper(object):
+class FieldMapperMixin(object):
     field_mapping = {}
     fallbacks = {}
 
@@ -19,7 +16,7 @@ class FieldMapper(object):
             return getattr(instance, field_name)
         else:
             return self.lookup_value(remainder, getattr(instance, field_name))
-    
+
     def apply_field_mapping(self, instance):
         fieldset = {}
 
@@ -33,11 +30,18 @@ class FieldMapper(object):
 
         return fieldset
 
+
+class LeadModelFieldMapper(FieldMapperMixin):
+    """ a LeadModelFieldMapper is a FieldMapper which specifically knows how to transform the fields of settings.LEAD_MODEL
+    into a Lead object
+    """
     def create_lead(self, instance):
         """ create a `Lead` object from the given object instance (an instance of the class given by settings.LEAD_MODEL)
         :param instance: `object` of class settings.LEAD_MODEL
         :return: `Lead` instance, as created from the given instance
         """
+        from crmify.models import Lead
+
         lead_fields = self.apply_field_mapping(instance)
         lead_fields['anchor'] = instance
         return Lead.objects.create(**lead_fields)
@@ -58,7 +62,7 @@ class FieldMapper(object):
         return lead
 
 
-class DjangoUserFieldMapper(FieldMapper):
+class DjangoUserFieldMapper(LeadModelFieldMapper):
     field_mapping = {
         'first_name': 'first_name',
         'last_name': 'last_name',
@@ -67,3 +71,4 @@ class DjangoUserFieldMapper(FieldMapper):
     fallbacks = {
         'username': 'email'
     }
+
