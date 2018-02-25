@@ -3,7 +3,7 @@ from crmify import models
 
 
 class LeadAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'email', 'external_id',)
+    list_display = ('first_name', 'last_name', 'email', 'external_id', 'anchor',)
     readonly_fields = ('external_id',)
 
 
