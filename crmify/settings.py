@@ -30,17 +30,19 @@ auth_keys = ['API_KEY', 'USERNAME', 'PASSWORD']
 DEFAULTS = {
     'BACKEND': 'crmify.backends.insightly.InsightlyBackend',
     'BACKEND_AUTH': {k: os.environ.get('CRMIFY_BACKEND_AUTH_{}'.format(k)) for k in auth_keys},
-    'BACKEND_OPTIONS': {
-        'LEAD_NEW_STATUS': 'NotContacted',
-        'LEAD_CONVERTED_STATUS': 'Converted',
-        'LEAD_DEAD_STATUS': 'Disqualified'
-    }
+    'BACKEND_FIELDMAPPER': 'crmify.mappers.DjangoUserFieldMapper',
+    'LEAD_MODEL': 'django.contrib.auth.models.User',
+    'LEAD_NEW_STATUS': 'NotContacted',
+    'LEAD_CONVERTED_STATUS': 'Converted',
+    'LEAD_DEAD_STATUS': 'Disqualified'
 }
 
 
 # List of settings that may be in string import notation.
 IMPORT_STRINGS = (
     'BACKEND',
+    'BACKEND_FIELDMAPPER',
+    'LEAD_MODEL'
 )
 
 
