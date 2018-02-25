@@ -111,6 +111,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 CRMIFY = {
     'BACKEND': 'crmify.backends.insightly.InsightlyBackend',
     'LEAD_MODEL': 'sales.models.UserProfile',
+    'LEAD_STATUS_MODEL': 'sales.models.Subscription',
     'LEAD_MODEL_FIELDMAPPER': 'sales.mappers.UserProfileFieldMapper',
 }
 

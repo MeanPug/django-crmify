@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from crmify.mixins import LeadStatusMixin
 
 
 class UserProfile(models.Model):
@@ -10,7 +11,7 @@ class UserProfile(models.Model):
     state = models.CharField(max_length=50, null=True, blank=True, default=None)
 
 
-class Subscription(models.Model):
+class Subscription(LeadStatusMixin, models.Model):
     TYPE_FREE = 'free'
     TYPE_PAID = 'paid'
     SUBSCRIPTION_TYPES = (
@@ -22,3 +23,12 @@ class Subscription(models.Model):
 
     type = models.CharField(max_length=50, choices=SUBSCRIPTION_TYPES, default=TYPE_FREE)
 
+    def lead_status(self):
+        if not self.user.auth.is_active:
+            return self.user, self.DEAD_LEAD
+        elif self.type == self.TYPE_FREE:
+            return self.user, self.NEW_LEAD
+        elif self.type == self.TYPE_PAID:
+            return self.user, self.CONVERTED_LEAD
+
+        return None

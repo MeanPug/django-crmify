@@ -54,6 +54,8 @@ def get_lead_model_instance_from_sender_instance(sender_instance):
                 return None
 
 
+## Lead Syncing ##
+
 @receiver(post_save)
 def update_crmify_lead(sender=None, instance=None, created=None, **kwargs):
     if sender in crm_senders and sender is not crmify_settings.LEAD_MODEL:
@@ -88,3 +90,19 @@ def sync_crm_lead(instance=None, created=None, **kwargs):
 @receiver(post_delete, sender=Lead)
 def delete_crm_lead(instance=None, **kwargs):
     instance.delete_from_crm()
+
+
+if crmify_settings.LEAD_STATUS_MODEL:
+    @receiver(post_save, sender=crmify_settings.LEAD_STATUS_MODEL)
+    def sync_crm_lead_status(instance=None, created=None, **kwargs):
+        lead_model, status = instance.lead_status()
+
+        try:
+            lead = lead_model.crm_lead
+        except ObjectDoesNotExist:
+            logger.warning('attempting to sync a crm lead status without a crm lead, abort')
+            return
+
+        lead.external_status = status
+        lead.sync_to_crm()
+        lead.save()

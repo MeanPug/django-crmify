@@ -29,6 +29,7 @@ class Lead(CRMObject):
     country = models.CharField(max_length=50, null=True, blank=True, default=None)
 
     external_id = models.CharField(max_length=200, unique=True)
+    external_status = models.CharField(max_length=200, null=True, blank=True, default=None)
     last_synced = models.DateTimeField(null=True, blank=True, default=None)
 
     def sync_to_crm(self):
