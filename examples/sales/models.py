@@ -3,14 +3,14 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
-    auth = models.OneToOneField(User, related_name='profile')
+    auth = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
 
     address = models.CharField(max_length=200, null=True, blank=True, default=None)
     city = models.CharField(max_length=100, null=True, blank=True, default=None)
     state = models.CharField(max_length=50, null=True, blank=True, default=None)
 
 
-class Subscripton(models.Model):
+class Subscription(models.Model):
     TYPE_FREE = 'free'
     TYPE_PAID = 'paid'
     SUBSCRIPTION_TYPES = (
@@ -18,7 +18,7 @@ class Subscripton(models.Model):
         (TYPE_PAID, TYPE_PAID),
     )
 
-    user = models.ForeignKey(UserProfile, related_name='subscriptions')
+    user = models.ForeignKey(UserProfile, related_name='subscriptions', on_delete=models.CASCADE)
 
     type = models.CharField(max_length=50, choices=SUBSCRIPTION_TYPES, default=TYPE_FREE)
 
