@@ -39,6 +39,7 @@ class FieldMapper(object):
         :return: `Lead` instance, as created from the given instance
         """
         lead_fields = self.apply_field_mapping(instance)
+        lead_fields['anchor'] = instance
         return Lead.objects.create(**lead_fields)
 
     def update_lead(self, lead, instance):
