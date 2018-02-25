@@ -1,34 +1,4 @@
-class FieldMapperMixin(object):
-    field_mapping = {}
-    fallbacks = {}
-
-    def lookup_value(self, field, instance):
-        """ nested value lookup for the given field on the given instance. For example, 'auth__username'
-        :param field: `str` field to lookup
-        :param instance: `object` to lookup field on
-        :return: `value`
-        """
-        parts = field.split('__')
-        field_name = parts[0]
-        remainder = '__'.join(parts[1:])
-
-        if not remainder:
-            return getattr(instance, field_name)
-        else:
-            return self.lookup_value(remainder, getattr(instance, field_name))
-
-    def apply_field_mapping(self, instance):
-        fieldset = {}
-
-        # model field, lead field
-        for mfield, lfield in self.field_mapping.items():
-            fieldset[lfield] = self.lookup_value(mfield, instance)
-
-        for mfield, lfield in self.fallbacks.items():
-            if fieldset.get(lfield) is None:
-                fieldset[lfield] = self.lookup_value(mfield, instance)
-
-        return fieldset
+from crmify.mixins import FieldMapperMixin
 
 
 class LeadModelFieldMapper(FieldMapperMixin):

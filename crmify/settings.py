@@ -6,8 +6,8 @@ For example your project's `settings.py` file might look like this:
 CRMIFY = {
     'BACKEND': 'crmify.backends.insightly.InsightlyBackend',
     'BACKEND_OPTIONS': {
-        'NEW_LEAD_STATUS': '',
-        'DEAD_LEAD_STATUS': ''
+        'LEAD_NEW_STATUS': '',
+        'LEAD_DEAD_STATUS': ''
     }
 }
 
@@ -32,6 +32,7 @@ DEFAULTS = {
     'BACKEND_AUTH': {k: os.environ.get('CRMIFY_BACKEND_AUTH_{}'.format(k)) for k in auth_keys},
     'LEAD_MODEL': 'django.contrib.auth.models.User',
     'LEAD_MODEL_FIELDMAPPER': 'crmify.mappers.DjangoUserFieldMapper',
+    'LEAD_STATUS_MODEL': None,
     'LEAD_NEW_STATUS': 'NotContacted',
     'LEAD_CONVERTED_STATUS': 'Converted',
     'LEAD_DEAD_STATUS': 'Disqualified'
@@ -42,7 +43,8 @@ DEFAULTS = {
 IMPORT_STRINGS = (
     'BACKEND',
     'LEAD_MODEL_FIELDMAPPER',
-    'LEAD_MODEL'
+    'LEAD_MODEL',
+    'LEAD_STATUS_MODEL',
 )
 
 
