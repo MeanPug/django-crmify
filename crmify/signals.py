@@ -1,4 +1,5 @@
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_save
+from django.core.exceptions import ObjectDoesNotExist
 from django.dispatch import receiver
 from crmify.settings import crmify_settings
 from crmify.models import Lead
@@ -8,7 +9,7 @@ import pdb
 logger = logging.getLogger(__name__)
 
 
-field_mapper = crmify_settings.BACKEND_FIELDMAPPER()
+field_mapper = crmify_settings.LEAD_MODEL_FIELDMAPPER()
 
 
 def get_possible_senders():
@@ -45,15 +46,22 @@ def get_lead_model_instance_from_sender_instance(sender_instance):
     for field in sender_instance._meta.get_fields():
         #TODO KNOWN LIMITATION: this will only work one layer deep.
         if field.is_relation and field.related_model is crmify_settings.LEAD_MODEL:
-            return getattr(sender_instance, field.name)
+            try:
+                return getattr(sender_instance, field.name)
+            except ObjectDoesNotExist:
+                # consider the example of UserProfile -> User. Say we modify a User's field before a UserProfile is created,
+                # that would raise an ObjectDoesNotExist error
+                return None
 
 
 @receiver(post_save)
-def update_crm_lead(sender=None, instance=None, created=None, **kwargs):
+def update_crmify_lead(sender=None, instance=None, created=None, **kwargs):
     if sender in crm_senders and sender is not crmify_settings.LEAD_MODEL:
         logger.debug('triggering save on lead model for related instance {}'.format(instance))
         lead_model_instance = get_lead_model_instance_from_sender_instance(instance)
-        lead_model_instance.save()
+
+        if lead_model_instance:
+            lead_model_instance.save()
     elif sender == crmify_settings.LEAD_MODEL:
         if created:
             logger.debug('creating new lead for instance {}'.format(instance))
@@ -67,6 +75,16 @@ def update_crm_lead(sender=None, instance=None, created=None, **kwargs):
 
 
 @receiver(post_delete, sender=crmify_settings.LEAD_MODEL)
-def delete_crm_lead(sender=None, instance=None, **kwargs):
+def delete_crmify_lead(instance=None, **kwargs):
     logger.debug('deleting leads for instance {}'.format(instance))
     Lead.objects.filter(anchor=instance).delete()
+
+
+@receiver(pre_save, sender=Lead)
+def sync_crm_lead(instance=None, created=None, **kwargs):
+    instance.sync_to_crm()
+
+
+@receiver(post_delete, sender=Lead)
+def delete_crm_lead(instance=None, **kwargs):
+    instance.delete_from_crm()
