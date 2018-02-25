@@ -11,7 +11,7 @@ CRMIFY = {
     }
 }
 
-This module provides the `api_setting` object, that is used to access
+This module provides the `crmify_settings` object, that is used to access
 CRMIFY framework settings, checking for user settings first, then falling
 back to the defaults.
 """
@@ -79,8 +79,8 @@ class APISettings(object):
     A settings object, that allows API settings to be accessed as properties.
     For example:
 
-        from rest_framework.settings import api_settings
-        print(api_settings.DEFAULT_RENDERER_CLASSES)
+        from crmify.settings import crmify_settings
+        print(crmify_settings.BACKEND)
 
     Any setting with string import paths will be automatically resolved
     and return the class, rather than the string literal.
@@ -129,14 +129,14 @@ class APISettings(object):
             delattr(self, '_user_settings')
 
 
-api_settings = APISettings(None, DEFAULTS, IMPORT_STRINGS)
+crmify_settings = APISettings(None, DEFAULTS, IMPORT_STRINGS)
 
 
-def reload_api_settings(*args, **kwargs):
+def reload_crmify_settings(*args, **kwargs):
     setting = kwargs['setting']
 
     if setting == 'CRMIFY':
-        api_settings.reload()
+        crmify_settings.reload()
 
 
-setting_changed.connect(reload_api_settings)
+setting_changed.connect(reload_crmify_settings)
