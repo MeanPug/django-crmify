@@ -20,7 +20,7 @@ except ImportError:
         return open(f, 'r', encoding='utf-8').read()
 
 
-version = '1.0.0'
+version = '1.1.0'
 
 
 setup(
