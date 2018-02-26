@@ -65,15 +65,12 @@ def update_crmify_lead(sender=None, instance=None, created=None, **kwargs):
         if lead_model_instance:
             lead_model_instance.save()
     elif sender == crmify_settings.LEAD_MODEL:
-        if created:
+        try:
+            logger.debug('updating lead for instance {}'.format(instance))
+            lead = field_mapper.update_lead(instance.crm_lead, instance)
+        except ObjectDoesNotExist:
             logger.debug('creating new lead for instance {}'.format(instance))
             lead = field_mapper.create_lead(instance)
-        else:
-            logger.debug('updating lead for instance {}'.format(instance))
-            lead = Lead.objects.get(anchor=instance)
-            lead = field_mapper.update_lead(lead, instance)
-
-        logger.debug('lead is {}'.format(lead))
 
 
 @receiver(post_delete, sender=crmify_settings.LEAD_MODEL)
