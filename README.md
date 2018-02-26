@@ -21,7 +21,7 @@ pip install django-crmify
 ```
 
 ## Quick Start
-To start using django-crmify, you need to setup some basic configuration parameters. While a number of the parameters will likely need tweaking, the most important settings to get started are: `BACKEND`, `LEAD_MODEL`, and `LEAD_MODEL_FIELDMAPPER`(each of these explained in more detail in the settings [section](#Settings) below). Additionally, you will likely need to set the authentication parameters of the CRM backend via environment variables. Here is an example configuration for an integration with the Insightly CRM:`
+To start using django-crmify, you need to setup some basic configuration parameters. While a number of the parameters will likely need tweaking, the most important settings to get started are: `BACKEND`, `LEAD_MODEL`, and `LEAD_MODEL_FIELDMAPPER`(each of these explained in more detail in the settings [section](#settings) below). Additionally, you will likely need to set the authentication parameters of the CRM backend via environment variables. Here is an example configuration for an integration with the Insightly CRM:`
 
 ```python
 # Backend auth for insightly is API key based, therefore the backend will be looking for an environment variable CRMIFY_BACKEND_AUTH_API_KEY for auth
@@ -53,10 +53,16 @@ class DjangoUserFieldMapper(LeadModelFieldMapper):
 To break this down a bit, the `field_mapping` consists of our model's fields on the left and the internal crmify Lead models' fields on the right. The `fallbacks` field defines the mapping to use in the case that the primary `field_mapping` has no value for a specified Lead field. 
 
 ## Settings
-| Setting      | Default                                       | Description                               |
-| ------------ | --------------------------------------------- | ----------------------------------------- |
-| BACKEND      | 'crmify.backends.insightly.InsightlyBackend'  | dot separated path to a CRM backend       |
-| BACKEND_AUTH | {}                                            | authentication parameters for the CRM backend. Stored in env vars CRMIFY_BACKEND_AUTH_API_KEY, CRMIFY_BACKEND_AUTH_USERNAME, and CRMIFY_BACKEND_AUTH_PASSWORD |     
+| Setting                | Default                                       | Description                               |
+| ---------------------- | --------------------------------------------- | ----------------------------------------- |
+| BACKEND                | 'crmify.backends.insightly.InsightlyBackend'  | dot separated path to a CRM backend       |
+| BACKEND_AUTH           | {}                                            | authentication parameters for the CRM backend. Stored in env vars CRMIFY_BACKEND_AUTH_API_KEY, CRMIFY_BACKEND_AUTH_USERNAME, and CRMIFY_BACKEND_AUTH_PASSWORD |     
+| LEAD_MODEL             | 'django.contrib.auth.models.User'             | dot separated path to your applications model you'd like treated as a CRM lead |
+| LEAD_MODEL_FIELDMAPPER | 'crmify.mappers.DjangoUserFieldMapper'        | dot separated path to a class defining a mapping between LEAD_MODEL and crmify Lead fields |
+| LEAD_STATUS_MODEL      | None                                          | dot separated path to a class subclassing the `crmify.mixins.LeadStatusMixin`. In order to track lead status, this class must implement the `lead_status` method. |
+| LEAD_NEW_STATUS        | 'NotContacted'                                | the status to use for new leads           |
+| LEAD_CONVERTED_STATUS  | 'Converted'                                   | the status to use for converted leads     |
+| LEAD_DEAD_STATUS       | 'Disqualified'                                | the status to use for dead leads          |
 
 ## Customization
 A CRM backend is simply a class implementing two methods:
