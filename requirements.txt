@@ -4,3 +4,7 @@ python-dotenv>=0.7,<1
 django-nose>=1.4,<1.5
 nose>=1.3,<1.4
 factory-boy>=2.10<3
+requests>=2.18,<2.19
+bumpversion>=0.5,<0.6
+twine>=1.9,<2
+pypandoc>=1.4,<1.5
