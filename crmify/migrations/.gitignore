@@ -1,0 +1,2 @@
+# the lead anchor is a dynamic foreign key and unique to the host application, therefore we don't want the static migration in the repo
+0006_lead_anchor.py
