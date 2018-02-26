@@ -13,7 +13,7 @@ and a 3rd party CRM. Some sample use cases below.
 
 *Basic Sales Funnel*
 1. User comes to site and registers, triggers crmify to create a lead
-2. User makes makes a purchase, triggering a Conversion event which syncs to Insightly and updates the Lead from a status of `NotContacted` to `Converted`
+2. User makes a purchase, triggering a Conversion event which syncs to Insightly and updates the Lead from a status of `NotContacted` to `Converted`
 
 ## Installation
 ```
